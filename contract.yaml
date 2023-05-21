@@ -1,0 +1,255 @@
+openapi: 3.0.0
+info:
+  title: Simple Study Deck Service
+  contact:
+    name: SSDeck
+    url: http://localhost:8080
+  version: 1.22.1
+servers:
+  - url: http://localhost:8080
+paths:
+  /signup:
+    post:
+      tags:
+            - User
+      summary: Create a new account
+      operationId: createAccount
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/Profile'
+      responses:
+        '201':
+          description: Created Account successfully
+        '422':
+          description: Sorry, could not create account. Check your entered data (passwords etc..) and try again.
+          
+  /logIn:
+    post:
+      tags:
+            - User
+      summary: Log in into exisiting account
+      operationId: logIn
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Username of the user
+                password:
+                  type: string
+                  description: Password of the user
+      responses:
+        '201':
+          description: Logged in successfully
+        '401':
+          description: Sorry, you have entered invalid Credentails. Try again with your correct login information.
+          
+  /profile/{username}:
+    get:
+     tags:
+        - User
+     summary: Get Profile
+     operationId: getProfile
+     parameters:
+        - name: username
+          in: path
+          required: true
+          description: username of the user
+          schema:
+            type: string
+     responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+        '404':
+          description: Sorry, this profile information is not available.This User could not be found
+    put:
+       tags:
+           - User
+       summary: Update profile
+       operationId: updateProfile
+       parameters:
+         - name: username
+           in: path
+           required: true
+           description: username
+           schema:
+             type: string
+       requestBody:
+         required: true
+         content:
+           application/json:
+             schema:
+               $ref: '#/components/schemas/Profile'
+       responses:
+         '200':
+           description: Updated Profile successfully
+         '404':
+          description: Sorry, this profile  could not be updated.This User could not be found
+    delete:
+     tags:
+      - User
+     summary: Delete profile by id
+     operationId: deleteProfile
+     parameters:
+        - name: username
+          in: path
+          required: true
+          description: Username of the User
+          schema:
+            type: string
+     responses:
+        '204':
+          description: Successfully deleted User
+        '404':
+          description: Sorry, cannot delete this profile.This User could not be found
+  /deck:
+    post:
+      tags:
+            - Card
+      summary: Create a  new card
+      operationId: createCard
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+                $ref: '#/components/schemas/Card'
+                
+      responses:
+        '201':
+          description: Created Card successfully
+        '422':
+          description: Sorry, could not create Card. Check your entered data and try again.
+    get:
+      tags:
+        - Card
+      summary: Get all cards
+      operationId: getDeck
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deck'
+
+  /deck/{card_id}:
+    put:
+      tags:
+          - Card
+      summary: Update card
+      operationId: updateCard
+      parameters:
+        - name: card_id
+          in: path
+          required: true
+          description: Id of the card
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
+      responses:
+        '200':
+          description: Updated Card successfully
+        '404':
+          description: Sorry, this card could not be updated.
+    get:
+     tags:
+        - Card
+     summary: Get card by id
+     operationId: getCard
+     parameters:
+        - name: card_id
+          in: path
+          required: true
+          description: Id of the card
+          schema:
+            type: string
+     responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '404':
+          description: Sorry, this card could not be found.
+    delete:
+     tags:
+      - Card
+     summary: Delete card by id
+     operationId: deleteCard
+     parameters:
+        - name: card_id
+          in: path
+          required: true
+          description: Id of the card
+          schema:
+            type: string
+     responses:
+        '200':
+          description: Successfully deleted card
+        '404':
+          description: Sorry, this card could not be deleted .
+          
+components:
+  schemas:
+    Profile:
+        type: object
+        properties:
+          firstname:
+            type: string
+            description: Firstname of the user
+          lastname:
+            type: string
+            description: Lastname of the user
+          username:
+            type: string
+            description: Nickname of the user
+          email:
+            type: string
+            description: Email Adress of the user
+          password:
+            type: string
+            description: Password of the User
+        required:
+          - firstname
+          - lastname
+          - username
+          - email
+          - password
+    Card:
+      type: object
+      properties:
+        question:
+          type: string
+          description: Question of the Card
+        answer:
+          type: string
+          description: Answer of the Question
+        card_id:
+          type: integer
+          description: Id of the card
+      required:
+        - question
+        - answer
+
+    Deck:
+      type: array
+      items:
+        $ref: '#/components/schemas/Card'

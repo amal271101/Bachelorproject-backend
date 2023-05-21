@@ -1,0 +1,313 @@
+openapi: 3.0.0
+info:
+  contact:
+    name: SSDeck
+    url: http://localhost:8080
+  title: Simple Study Deck Service
+  version: 1.22.1
+servers:
+- url: http://localhost:8080
+paths:
+  /signup:
+    post:
+      operationId: createAccount
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+        required: true
+      responses:
+        "201":
+          description: Created Account successfully
+        "422":
+          description: "Sorry, could not create account. Check your entered data (passwords\
+            \ etc..) and try again."
+      summary: Create a new account
+      tags:
+      - User
+      x-content-type: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: User
+  /logIn:
+    post:
+      operationId: logIn
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/logIn_request'
+        required: true
+      responses:
+        "201":
+          description: Logged in successfully
+        "401":
+          description: "Sorry, you have entered invalid Credentails. Try again with\
+            \ your correct login information."
+      summary: Log in into exisiting account
+      tags:
+      - User
+      x-content-type: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: User
+  /profile/{username}:
+    delete:
+      operationId: deleteProfile
+      parameters:
+      - description: Username of the User
+        explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "204":
+          description: Successfully deleted User
+        "404":
+          description: "Sorry, cannot delete this profile.This User could not be found"
+      summary: Delete profile by id
+      tags:
+      - User
+      x-accepts: application/json
+      x-tags:
+      - tag: User
+    get:
+      operationId: getProfile
+      parameters:
+      - description: username of the user
+        explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: OK
+        "404":
+          description: "Sorry, this profile information is not available.This User\
+            \ could not be found"
+      summary: Get Profile
+      tags:
+      - User
+      x-accepts: application/json
+      x-tags:
+      - tag: User
+    put:
+      operationId: updateProfile
+      parameters:
+      - description: username
+        explode: false
+        in: path
+        name: username
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Profile'
+        required: true
+      responses:
+        "200":
+          description: Updated Profile successfully
+        "404":
+          description: "Sorry, this profile  could not be updated.This User could\
+            \ not be found"
+      summary: Update profile
+      tags:
+      - User
+      x-content-type: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: User
+  /deck:
+    get:
+      operationId: getDeck
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Deck'
+          description: OK
+      summary: Get all cards
+      tags:
+      - Card
+      x-accepts: application/json
+      x-tags:
+      - tag: Card
+    post:
+      operationId: createCard
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
+        required: true
+      responses:
+        "201":
+          description: Created Card successfully
+        "422":
+          description: "Sorry, could not create Card. Check your entered data and\
+            \ try again."
+      summary: Create a  new card
+      tags:
+      - Card
+      x-content-type: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: Card
+  /deck/{card_id}:
+    delete:
+      operationId: deleteCard
+      parameters:
+      - description: Id of the card
+        explode: false
+        in: path
+        name: card_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successfully deleted card
+        "404":
+          description: "Sorry, this card could not be deleted ."
+      summary: Delete card by id
+      tags:
+      - Card
+      x-accepts: application/json
+      x-tags:
+      - tag: Card
+    get:
+      operationId: getCard
+      parameters:
+      - description: Id of the card
+        explode: false
+        in: path
+        name: card_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+          description: OK
+        "404":
+          description: "Sorry, this card could not be found."
+      summary: Get card by id
+      tags:
+      - Card
+      x-accepts: application/json
+      x-tags:
+      - tag: Card
+    put:
+      operationId: updateCard
+      parameters:
+      - description: Id of the card
+        explode: false
+        in: path
+        name: card_id
+        required: true
+        schema:
+          type: string
+        style: simple
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Card'
+        required: true
+      responses:
+        "200":
+          description: Updated Card successfully
+        "404":
+          description: "Sorry, this card could not be updated."
+      summary: Update card
+      tags:
+      - Card
+      x-content-type: application/json
+      x-accepts: application/json
+      x-tags:
+      - tag: Card
+components:
+  schemas:
+    Profile:
+      example:
+        firstname: firstname
+        password: password
+        email: email
+        lastname: lastname
+        username: username
+      properties:
+        firstname:
+          description: Firstname of the user
+          type: string
+        lastname:
+          description: Lastname of the user
+          type: string
+        username:
+          description: Nickname of the user
+          type: string
+        email:
+          description: Email Adress of the user
+          type: string
+        password:
+          description: Password of the User
+          type: string
+      required:
+      - email
+      - firstname
+      - lastname
+      - password
+      - username
+      type: object
+    Card:
+      example:
+        question: question
+        answer: answer
+        card_id: 0
+      properties:
+        question:
+          description: Question of the Card
+          type: string
+        answer:
+          description: Answer of the Question
+          type: string
+        card_id:
+          description: Id of the card
+          type: integer
+      required:
+      - answer
+      - question
+      type: object
+    Deck:
+      items:
+        $ref: '#/components/schemas/Card'
+      type: array
+    logIn_request:
+      properties:
+        username:
+          description: Username of the user
+          type: string
+        password:
+          description: Password of the user
+          type: string
+      type: object
