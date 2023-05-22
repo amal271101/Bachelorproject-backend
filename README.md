@@ -1,5 +1,6 @@
-# OpenAPI generated server
+This project was developed for my Bachelor Thesis that compares functional and class components in React.
 
+# OpenAPI generated server
 Spring Boot Server
 
 ## Overview
